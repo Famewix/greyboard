@@ -5,6 +5,7 @@ from colorama import Fore
 import sys, os
 import shutil
 import subprocess
+import re, time
 
 try:
     conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -39,6 +40,16 @@ def set_clipboard_data(text):
     win32clipboard.SetClipboardText(text)
     win32clipboard.CloseClipboard()
 
+def press_key(key):
+    try:
+        keyboard.press_and_release(key)
+        conn.send(f"{brackets} Pressed key {key}".encode())
+    except ValueError:
+        keys = list(key)
+        for key in keys:
+            keyboard.press_and_release(key)
+        conn.send(f"{brackets} Pressed key chain {keys}".encode())
+
 while True:
     key = conn.recv(3024).decode()
     if key == 'pexit':
@@ -54,14 +65,23 @@ while True:
         conn.send(f"{brackets} Copied {text_to_copy}!!".encode())
 
     else:
-        print(key)
-        try:
-            keyboard.press_and_release(key)
-            conn.send(f"{brackets} Pressed key {key}".encode())
-        except ValueError:
-            keys = list(key)
-            for key in keys:
-                keyboard.press_and_release(key)
-            conn.send(f"{brackets} Pressed key chain {keys}".encode())
+        if "{{" in key and "}}" in key:
+            print('asdlalksmdlkmalskmd')
+            # abcd{{2}}wasd
+            key_set_1 = key.split('{{')[0]
+            key_set_2 = key.split('}}')[-1]
+            try:
+                interval = re.search(r"\{{([0-9_]+)\}}", key).group(1)
+            except AttributeError:
+                conn.send(f"\n{brackets} Error parsing interval\n".encode())
+
+            print(key_set_1)
+            print(key_set_2)
+            print(interval)
+            press_key(key_set_1)
+            time.sleep(int(interval))
+            press_key(key_set_2)
+        else:
+            press_key(key)
 
 conn.close()

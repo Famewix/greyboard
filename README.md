@@ -7,8 +7,12 @@ Take control over someone's keyboard.
 - Get clipboard data
 - Set clipboard data
 - Persistence
+- Can send two set of key presses with time interval
 - currently runs on single machine
 
 ## Features to be added
 - Help prompt
 - handle multiple connections
+- 
+
+## Usage

@@ -1,7 +1,7 @@
-import win32clipboard
+import keyboard, time
 
-# get clipboard data
-win32clipboard.OpenClipboard()
-data = win32clipboard.GetClipboardData()
-win32clipboard.CloseClipboard()
-print(data)
+time.sleep(2)
+ab
+keyboard.press_and_release('a')
+keyboard.wait(1)
+keyboard.press_and_release('b')
