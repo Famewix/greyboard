@@ -11,8 +11,6 @@ Take control over someone's keyboard.
 - currently runs on single machine
 
 ## Features to be added
-- Help prompt
 - handle multiple connections
-- 
 
 ## Usage

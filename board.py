@@ -66,7 +66,6 @@ while True:
 
     else:
         if "{{" in key and "}}" in key:
-            print('asdlalksmdlkmalskmd')
             # abcd{{2}}wasd
             key_set_1 = key.split('{{')[0]
             key_set_2 = key.split('}}')[-1]
@@ -75,9 +74,6 @@ while True:
             except AttributeError:
                 conn.send(f"\n{brackets} Error parsing interval\n".encode())
 
-            print(key_set_1)
-            print(key_set_2)
-            print(interval)
             press_key(key_set_1)
             time.sleep(int(interval))
             press_key(key_set_2)
