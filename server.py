@@ -16,20 +16,10 @@ class Listener:
 
     def run(self):
         while True:
-            if not self.receive:
-                key = input("KEY>> ")
-                self.receive = True
-                if key != 'get_key_stream':
-                    self.conn.send(key.encode())
-                    if self.receive:
-                        message = self.conn.recv(3048).decode()
-                        print(message)
-                elif key == 'get_key_stream':
-                    self.conn.send(key.encode())
-                    self.receive = True
-                    while True:
-                        key_pressed = self.conn.recv(3048).decode()
-                        print(key_pressed)
+            key = input("KEY>> ")
+            self.conn.send(key.encode())
+            message = self.conn.recv(3048).decode()
+            print(message)
 
             
 
